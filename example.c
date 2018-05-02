@@ -3,6 +3,7 @@
 #include <utils/ifjmp.h>
 
 #include "rope.h"
+#include "str.h"
 
 int usage (const char * cmd)
 {
