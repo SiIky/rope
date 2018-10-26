@@ -1,11 +1,10 @@
 #ifndef _ROPE_H
 #define _ROPE_H
 
-#define VEC_DATA_TYPE          struct str *
-#define VEC_DATA_TYPE_EQ(A, B) (str_eq((A), (B)))
-#define VEC_DTOR               str_free
-#define VEC_PREFIX             rope_
-#define VEC_VEC                rope
+#define VEC_CFG_DATA_TYPE     struct str
+#define VEC_CFG_DATA_TYPE_CMP str_cmp
+#define VEC_CFG_DTOR          str_free
+#define VEC_CFG_VEC           rope
 #include <utils/vec.h>
 
 #endif /* _ROPE_H */

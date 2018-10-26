@@ -1,9 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <utils/ifjmp.h>
 
 #include "rope.h"
 #include "str.h"
+
+void str_print (const struct str s)
+{
+    printf("%s", str_as_slice(&s));
+}
 
 int usage (const char * cmd)
 {
@@ -23,8 +30,8 @@ int main (int argc, char ** argv)
     FILE * fin = NULL;
     char l[BUF_SIZE] = "";
 
-    struct rope * r = rope_new();
-    ifjmp(r == NULL, ko);
+    struct rope _r = {0};
+    struct rope * r = &_r;
 
     for (int i = 1; i < argc; i++) {
         fin = fopen(argv[i], "r");
@@ -36,14 +43,11 @@ int main (int argc, char ** argv)
             if (ptr == NULL)
                 continue;
 
-            size_t capacity = strlen(l);
+            size_t capacity = strlen(l) + 1;
             size_t length = capacity;
 
-            struct str * s = str_from_raw_parts(ptr, length, capacity);
-            if (s == NULL) {
-                free(ptr);
-                continue;
-            }
+            struct str s = {0};
+            str_from_raw_parts(&s, ptr, length, capacity);
 
             strncpy(ptr, l, length);
 
@@ -52,18 +56,12 @@ int main (int argc, char ** argv)
 
         fclose(fin);
 
-        for (rope_iter(r); rope_itering(r); rope_iter_next(r)) {
-            struct str * s = rope_get_nth(r, rope_iter_idx(r));
-            printf("%s", str_as_slice(s));
-        }
+        rope_foreach(r, str_print);
 
         rope_truncate(r, 0);
     }
 
-    rope_free(r);
+    _r = rope_free(_r);
 
     return 0;
-
-ko:
-    return !0;
 }
